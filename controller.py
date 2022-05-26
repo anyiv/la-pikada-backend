@@ -150,22 +150,21 @@ def most_selled_products():
 def income_by_date(initial_date, final_date):
     initial_d = datetime.strptime(initial_date, '%Y-%m-%d')
     final_d = datetime.strptime(final_date, '%Y-%m-%d')
-    data = sorted(sales, key=lambda d: d['date_closed'])
-
-    
     final_d_h = final_d + timedelta(days=1)
     amount = 0
-    l_sales = [sale for sale in sales if datetime.strptime(sale['date_closed'], '%Y-%m-%d %X')  <= final_d_h and  datetime.strptime(sale['date_closed'], '%Y-%m-%d %X') >= initial_d]
-    
-    for sale in l_sales:
-        amount += sale['total']
-    result = dict({ 'initial_date': initial_d, 'final_date':final_d, 'amount': amount })
 
-    if len(result) > 0:
+    sales_l = [sale for sale in sales if datetime.strptime(sale['date_closed'], '%Y-%m-%d %X')  <= final_d_h and  datetime.strptime(sale['date_closed'], '%Y-%m-%d %X') >= initial_d]
+
+    if len(sales_l) > 0:
+        for sale in sales_l:
+            amount += sale['total']
+        result = dict({ 'initial_date': initial_d, 'final_date':final_d, 'amount': amount, 'status': True })
+
         return result
     else:
         result = dict({
-            'msg': 'No hay registros dentro de ese rango de fechas'
+            'msg': 'No hay registros dentro de ese rango de fechas',
+            'status': False
         })
         return result
 
