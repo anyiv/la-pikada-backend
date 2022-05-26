@@ -26,11 +26,11 @@ def cashier_sales():
     return jsonify(cashier_more_sales())
 
 
-@app.route('/api/ingress-by-date-range', methods=['POST'])
-def ingress_by_range():
+@app.route('/api/income-by-date-range', methods=['POST'])
+def income_by_range():
     initial_date = request.args.get('initial_date')
     final_date = request.args.get('final_date')
-    return jsonify(ingress_by_date(initial_date,final_date))
+    return jsonify(income_by_date(initial_date,final_date))
 
 
 @app.route('/api/poducts_most_selled')
@@ -38,8 +38,8 @@ def most_selled():
     return jsonify(most_selled_products())
 
 @app.route('/api/total-amount')
-def total_amount_ingress():
-    return jsonify(total_ingress())
+def total_amount_income():
+    return jsonify(total_income())
 
 @app.route('/api/cant-reports')
 def cantss_reports():
@@ -47,30 +47,7 @@ def cantss_reports():
 
 @app.route('/api/list-sales')
 def l_sales_report():
-    return jsonify(sales_list_report())
-
-
-#Para prueba    
-@app.route('/api/list-products')
-def l_products():
-    return jsonify(list_products())
-
-
-@app.route('/api/list-waiters')
-def l_waiters():
-    return jsonify(list_waiters())
-
-
-@app.route('/api/list-cashiers')
-def l_cashiers():
-    return jsonify(list_cashiers())
-
-@app.route('/api/list-payments')
-def l_payments():
-    return jsonify(list_payments())
-
-
-
+    return jsonify(sales_report_list())
 
 
 if __name__ == "__main__":
