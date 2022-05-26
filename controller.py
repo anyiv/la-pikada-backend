@@ -6,27 +6,23 @@ zones = []
 waiters = []
 cashiers = []
 payments = []
-l_sales = []
-
-def list_sales():
-    for sale in sales:
-        l_sales.append(sale)
-    return l_sales
-
 
 def list_products():
+    result = []
     for sale in sales:
         for product in sale['products']:
             products.append(product)
 
-    return products
+    for product in products:
+        result.append(product['name'])
+    return result
 
 
 def total_ingress():
-    l_sales = list_sales()
     amount = 0
-    initial_date = l_sales[0]['date_closed']
-    final_date = l_sales[len(l_sales)-1]['date_closed']
+    data = sorted(sales, key=lambda d: d['date_closed'])
+    initial_date = data[0]['date_closed']
+    final_date = data[len(sales)-1]['date_closed']
     for sale in sales:
         amount += sale['total'] 
 
@@ -41,14 +37,23 @@ def total_ingress():
 def list_zones():
     for sale in sales:
         zones.append(sale['zone'])
-    names = list(set(zones))
-    return names
+    result = list(set(zones))
+    return result
 
 
 def list_payments():
+    list_general = []
+    result = []
     for sale in sales:
         payments.append(sale['payments'])
-    return payments
+
+    for p in payments:
+        for i in p:
+            list_general.append(i)
+            
+    for t in list_general:
+        result.append(t['type'])
+    return result
 
 
 def list_waiters():
@@ -75,30 +80,27 @@ def cant_by_zones():
     result = sorted(data, key=lambda d: -d['quantity'])
     return result
 
+def filtered_payment_names():
+    l_payments = list_payments()
+
+    result = list(set(l_payments))
+    return result
+
+
 #cantidad de ventas por método de pago
 def cant_by_payment_type():
-    paym = list_payments()
-    list_general = []
-    type_names = []
+    payments = list_payments()
+    types = filtered_payment_names()
     data = []
-    for p in paym:
-        for i in p:
-            list_general.append(i)
-            
-    for t in list_general:
-        type_names.append(t['type'])
-
-    types = list(set(type_names))
 
     for type in types:
-        data.append({'type': type, 'quantity':type_names.count(type)})
+        data.append({'type': type, 'quantity':payments.count(type)})
 
     result = sorted(data, key=lambda d: -d['quantity'])
     return result
 
 #Lista de meseros por cantidad de ventas
 def waiter_more_sales():
-    list_sales()
     l_waiters = list_waiters()
     names_general = []
     data = []
@@ -113,7 +115,6 @@ def waiter_more_sales():
 
 #Lista de cajeros por cantidad de ventas
 def cashier_more_sales():
-    list_sales()
     l_cashiers = list_cashiers()
     names_general = []
     data = []
@@ -126,18 +127,20 @@ def cashier_more_sales():
     result = sorted(data, key=lambda d: -d['quantity'])
     return result
 
+def filtered_products_names():
+    l_products = list_products() 
+
+    result = list(set(l_products))
+    return result
+
 #Lista de productos por cantidad venta
 def most_selled_products():
     l_products = list_products()
-    names_general = []
+    products_name = filtered_products_names()
     data = []
-    for product in l_products:
-        names_general.append(product['name'])
-
-    products_name = list(set(names_general))
 
     for name in products_name:
-        data.append({'name': name, 'quantity': names_general.count(name)})
+        data.append({'name': name, 'quantity': l_products.count(name)})
     
     result = sorted(data, key=lambda d: -d['quantity'])
 
@@ -156,5 +159,25 @@ def ingress_by_date(initial_date, final_date):
     result = dict({ 'initial_date': initial_d, 'final_date':final_d, 'amount': amount })
     return result
 
+#Reportes por cantidad
+def cants_reports():
+    l_cashiers = list_cashiers()
+    l_waiters = list_waiters()
+    l_products = filtered_products_names()
+    l_zones = list_zones()
+    result = []
+    result.append({ 'name': 'Nro de productos', 'cant' : len(l_products)})
+    result.append({ 'name': 'Nro de cajeros', 'cant' : len(l_cashiers)})
+    result.append({ 'name': 'Nro de meseros', 'cant' : len(l_waiters)})
+    result.append({ 'name': 'Nro de zonas', 'cant' : len(l_zones)})
 
-  
+    return result
+
+#Lista de ventas 
+def sales_list_report():
+    data = []
+    for index, sale in enumerate(sales):
+        data.append({ 'id': index, 'zone': sale['zone'], 'table': sale['table'],
+         'diners': sale['diners'], 'nro_products': len(sale['products']), 'total': sale['total'], 'date': sale['date_closed'] })
+    result = sorted(data, key=lambda d: d['date'], reverse=True)
+    return result

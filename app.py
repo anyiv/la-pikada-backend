@@ -41,6 +41,14 @@ def most_selled():
 def total_amount_ingress():
     return jsonify(total_ingress())
 
+@app.route('/api/cant-reports')
+def cantss_reports():
+    return jsonify(cants_reports())
+
+@app.route('/api/list-sales')
+def l_sales_report():
+    return jsonify(sales_list_report())
+
 
 #Para prueba    
 @app.route('/api/list-products')
@@ -56,6 +64,12 @@ def l_waiters():
 @app.route('/api/list-cashiers')
 def l_cashiers():
     return jsonify(list_cashiers())
+
+@app.route('/api/list-payments')
+def l_payments():
+    return jsonify(list_payments())
+
+
 
 
 
