@@ -1,5 +1,4 @@
 import json
-import jsonpickle
 
 data = open('ventas.json')
 
